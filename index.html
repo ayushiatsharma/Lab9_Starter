@@ -69,39 +69,162 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id = "consLog">Console Log</button>
+      <button id = "consError">Console Error</button>
+      <button id = "consCount">Console Count</button>
+      <button id = "consWarn" >Console Warn</button>
+      <button id = "consAssert">Console Assert</button>
+      <button id = "consClear">Console Clear</button>
+      <button id = "consDir">Console Dir</button>
+      <button id = "consDirXML">Console dirxml</button>
+      <button id = "consGrpStart">Console Group Start</button>
+      <button id = "consGrpEnd">Console Group End</button>
+      <button id = "consTable">Console Table</button>
+      <button id = "startTimer">Start Timer</button>
+      <button id = "endTimer">End Timer</button>
+      <button id = "consTrace">Console Trace</button>
+      <button id = "globalError">Trigger a Global Error</button>
+      <button id = "customErr">Trigger a Custom Error</button>
     </section>
   </main>
 
+  
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ef5317aa1863423497345629452d4262"
+    });
+  </script>
+
+  <script>
+    TrackJS.track('Testing TrackJS!'); //coming from track js
+    //step 5
+    window.onerror = function () {
+        console.error("an error has occurred")
+    };
+    
+    //Code referenced from: https://javascript.info/custom-errors
+    class CustomError extends Error {
+      constructor(message) {
+        super(message);  
+        this.name = "Custom Error";  
+      }
+    }
+
+    let customErr = document.getElementById("customErr");
+      customErr.addEventListener('click', e => {
+
+        try {      
+            throw new CustomError("This is a custom error. We are testing it.")
+        } catch(err) {
+          alert(err.message); 
+          alert(err.name);  
+        }
+
+      });
+
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
+      let output = document.querySelector('output')
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      
+
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+        
+      } catch (err) {
+        console.error("Input " + err + " is invalid");
+      } finally { 
+        console.log("all done")
+      }
+
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    
+    let consLog = document.getElementById('consLog');
+    consLog.addEventListener('click', e => {
+      console.log("Console Log Demo")
+    });
+
+    let consError= document.getElementById('consError');
+    consError.addEventListener('click', e => {
+      console.error("Console Error Demo")
+    });
+
+    let consCount= document.getElementById('consCount');
+    consCount.addEventListener('click', e => {
+      console.count()
+    });
+
+    let consWarn= document.getElementById('consWarn');
+    consWarn.addEventListener('click', e => {
+      console.warn("Console Warn Button")
+    });
+
+    let consAssert= document.getElementById('consAssert');
+    consAssert.addEventListener('click', e => {
+      let number = 3; 
+      console.assert(number % 2 === 0, {number: number, errorMsg: "Number is not even"});
+    });
+
+    let consClear= document.getElementById('consClear');
+    consClear.addEventListener('click', e => {
+      console.clear()
+    });
+
+    let consDir= document.getElementById('consDir');
+    consDir.addEventListener('click', e => {
+      console.dir(consDir)
+    });
+
+    let consDirXML= document.getElementById('consDirXML');
+    consDirXML.addEventListener('click', e => {
+      console.dirxml(consDir)
+    });
+
+    let consGrpStart= document.getElementById('consGrpStart');
+    consGrpStart.addEventListener('click', e => {
+      console.group()
+    });
+
+    let consGrpEnd= document.getElementById('consGrpEnd');
+    consGrpEnd.addEventListener('click', e => {
+      console.groupEnd()
+    });
+
+    let consTable = document.getElementById('consTable');
+    consTable.addEventListener('click', e => {
+      console.table([[1, 2, 3, 4], [23, 43, 53, 56]])
+    });
+
+ 
+    let startTimer = document.getElementById('startTimer');
+    startTimer.addEventListener('click', e => {
+      console.time("Timer Button")
+    });
+
+    let endTimer = document.getElementById('endTimer');
+    endTimer.addEventListener('click', e => {
+      console.timeEnd("Timer Button")
+    });
+
+    let consTrace = document.getElementById('consTrace');
+    consTrace.addEventListener('click', e => {
+      console.trace([document.getElementById('consTable')])
+    });
+
+
+    let globalError= document.getElementById('globalError');
+    globalError.addEventListener('click', e => {
+      throw new Error ("This is testing global error.")
+    });
+
   </script>
 </body>
 
